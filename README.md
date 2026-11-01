@@ -70,7 +70,7 @@ docker compose up -d --build
 docker compose ps
 ```
 
-브라우저에서 **[http://localhost:8080](http://localhost:8080)**에 접속해 방금 정한 아이디·암호로 로그인합니다. 기본 실행은 외부 챗봇 JSON 방식입니다.
+브라우저에서 [http://localhost:8080](http://localhost:8080)에 접속해 방금 정한 아이디·암호로 로그인합니다. 기본 실행은 외부 챗봇 JSON 방식입니다.
 
 로그인 화면과 왼쪽 메뉴의 **사용 가이드**에서도 도움말을 볼 수 있습니다. 기본 설치의 주소는 [http://localhost:8080/guide](http://localhost:8080/guide)입니다.
 
