@@ -1,5 +1,5 @@
 FROM node:22-bookworm-slim AS node
-FROM python:3.12-slim-bookworm AS base
+FROM python:3.15-slim-bookworm AS base
 RUN useradd -m -u 1000 app && mkdir -p /data && chown app:app /data
 ENV PYTHONUNBUFFERED=1 PYTHONDONTWRITEBYTECODE=1
 WORKDIR /app
