@@ -1,0 +1,8 @@
+#!/bin/sh
+set -eu
+psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" --set=app_pass="$APP_DB_PASSWORD" <<'SQL'
+CREATE ROLE artstyle_web LOGIN NOSUPERUSER NOCREATEDB NOCREATEROLE NOREPLICATION PASSWORD :'app_pass';
+ALTER DATABASE artstyle OWNER TO artstyle_web;
+ALTER SCHEMA public OWNER TO artstyle_web;
+REVOKE CREATE ON SCHEMA public FROM PUBLIC;
+SQL

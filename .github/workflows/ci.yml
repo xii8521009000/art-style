@@ -1,0 +1,41 @@
+name: Verify
+on: [push, pull_request]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:17-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: ci-only-temporary-database
+          POSTGRES_DB: artstyle
+        ports: ["5432:5432"]
+        options: --health-cmd="pg_isready -U postgres" --health-interval=5s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: pip install -r backend/requirements.txt pip-audit
+      - run: python -m unittest discover -s tests
+      - run: python tools/check_public.py
+      - run: node --test frontend/src/external-request.test.js frontend/src/image-selection.test.js
+      - run: npm ci --prefix frontend
+      - run: npm run build --prefix frontend
+      - run: pip-audit -r backend/requirements.txt
+      - run: npm audit --prefix frontend
+      - run: python tests/integration_storage.py
+        env:
+          PYTHONPATH: backend
+          DATABASE_URL: postgresql://postgres:ci-only-temporary-database@localhost:5432/artstyle
+          APP_PASSWORD_HASH: unused-in-direct-handler-storage-test

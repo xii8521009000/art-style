@@ -1,0 +1,10 @@
+.git
+**/node_modules
+**/dist
+**/__pycache__
+.venv
+.env
+data
+tools
+test-results
+*.tar.gz
